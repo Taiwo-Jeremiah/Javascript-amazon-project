@@ -78,18 +78,20 @@ document.querySelectorAll(".js-add-to-cart").forEach((button) => {
         MatchingItem.quantity += 1;
       } else {
         cart.push({
-          productId: productId
+          productId: productId,
           quantity: 1,
         });
       };
 
       let cartQuantity = 0;
     //loop through the cart and add all the quantities together,thens accumulate it in the cartQuantity
+
       cart.forEach((item)=>{
         cartQuantity += item.quantity;
       })
 
-    console.log(cartQuantity)
-    console.log(cart);
+      //put the cartQuantity on the webpage.
+      document.querySelector('.js-cart-quantity')
+        .innerHTML = cartQuantity;
   })
 });
