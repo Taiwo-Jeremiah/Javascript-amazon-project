@@ -1,4 +1,8 @@
-productsHTML = "";
+import { cart, addToCart } from "../data/cart.js";
+import { products } from "../data/products.js";
+import { formatCurrency } from "./utils/money.js";
+
+let productsHTML = "";
 
 products.forEach((product) => {
   productsHTML += `
@@ -21,7 +25,7 @@ products.forEach((product) => {
           </div>
 
           <div class="product-price">
-            $${(product.priceCents / 100).toFixed(2)}
+            $${formatCurrency(product.priceCents)}
           </div>
 
           <div class="product-quantity-container">
@@ -57,59 +61,38 @@ products.forEach((product) => {
 
 document.querySelector(".js-products-grid").innerHTML = productsHTML;
 
-let cartQuantity = 0;
+function updateCartQuantity() {
+  let cartQuantity = 0;
 
-//loop through the array for every button
+  cart.forEach((cartItem) => {
+    cartQuantity += cartItem.quantity;
+  });
+
+  document.querySelector(".js-cart-quantity").innerHTML = cartQuantity;
+}
+
 document.querySelectorAll(".js-add-to-cart").forEach((button) => {
   button.addEventListener("click", () => {
-    const productId = button.dataset.productId; 
-    /*destructuring, it would do the same as the code above
-    const {productId}  = button.dataset; */
+    const productId = button.dataset.productId;
 
- //get the correct quantity selector for this product
- const quantitySelector = document.querySelector(`.js-quantity-selector-${productId}`);
+    const quantitySelector = document.querySelector(
+      `.js-quantity-selector-${productId}`
+    );
 
- //use number() to convert the value to a number because what we got from the selector is a string
- const selectedQuantity = Number(quantitySelector.value);
-//get the correct added to cart for this product
- const addedToCart = document.querySelector(`.js-added-to-cart-${productId}`);
+    const selectedQuantity = Number(quantitySelector.value);
 
-  addedToCart.classList.add("show-added")
+    const addedToCart = document.querySelector(
+      `.js-added-to-cart-${productId}`
+    );
 
-  setTimeout(()=>{
-  addedToCart.classList.remove("show-added");
-  },2000)
+    addedToCart.classList.add("show-added");
 
- let MatchingItem;
-    //check if a product is already in the cart, save it into MatchingItem
-    cart.forEach((item) => {
-      if (productId === item.productId) {
-        MatchingItem = item;
-      }
-    });
+    setTimeout(() => {
+      addedToCart.classList.remove("show-added");
+    }, 2000);
 
-    // if an item is already in the cart, increase the quantity only, else add it to the cart.
-    if (MatchingItem) {
-      MatchingItem.quantity += selectedQuantity;
-    } else {
-      cart.push({
-        productId: productId,
-       // productId, shorthand for above
-        quantity: selectedQuantity,
-      });
-    }
-
-    let cartQuantity = 0;
-    //loop through the cart and add all the quantities together,thens accumulate it in the cartQuantity
-
-    cart.forEach((item) => {
-      cartQuantity += item.quantity;
-    });
-
-    //put the cartQuantity on the webpage.
-    document.querySelector(".js-cart-quantity").innerHTML = cartQuantity;
-
+    addToCart(productId, selectedQuantity);
+    updateCartQuantity();
     console.log(cart);
-    
-  })
+  });
 });
