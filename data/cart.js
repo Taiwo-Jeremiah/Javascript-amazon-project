@@ -31,7 +31,7 @@ export function addToCart(productId, selectedQuantity) {
     cart.push({
       productId: productId,
       quantity: selectedQuantity,
-      deliveryOptionId: '1' // default delivery option
+      deliveryOptionId: '1' 
     });
   }
   saveToStorage();
