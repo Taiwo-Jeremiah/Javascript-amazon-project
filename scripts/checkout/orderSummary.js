@@ -170,7 +170,7 @@ export function renderOrderSummary() {
       link.addEventListener("click", () => {
         const productId = link.dataset.productId;
 
-   ``     const container = document.querySelector(
+       const container = document.querySelector(
           `.js-cart-item-container-${productId}`
         );
         container.classList.remove("is-editing-quantity");
