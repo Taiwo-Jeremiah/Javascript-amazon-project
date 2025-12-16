@@ -4,5 +4,6 @@
   "codesnap.transparentBackground": true,
   "codesnap.backgroundColor": "#4FC3F7",
   "codesnap.realLineNumbers": false,
-  "codesnap.showWindowTitle": false
+  "codesnap.showWindowTitle": false,
+  "liveServer.settings.port": 5501
 }
