@@ -2,6 +2,10 @@
 
 A full-featured e-commerce web application built with HTML, CSS, and vanilla JavaScript. This project simulates core Amazon functionality including product browsing, shopping cart management, checkout, and order tracking.
 
+## Live link
+
+https://taiwo-jeremiah.github.io/Javascript-amazon-project/
+
 ## Features
 
 - **Product Catalog**: Browse and search through a catalog of products with ratings and pricing
