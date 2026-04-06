@@ -2,7 +2,7 @@ import {getProduct, loadProductsFetch} from '../data/products.js';
 import {orders} from '../data/orders.js';
 import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
 import {formatCurrency} from './utils/money.js';
-import {addToCart} from '../data/cart.js';
+import {addToCart, calculateCartQuantity} from '../data/cart.js';
 
 async function loadPage() {
   await loadProductsFetch();
@@ -41,6 +41,11 @@ async function loadPage() {
 
   function productsListHTML(order) {
     let productsListHTML = '';
+
+    // Safety check for orders that don't have products array
+    if (!order.products || order.products.length === 0) {
+      return '';
+    }
 
     order.products.forEach((productDetails) => {
       const product = getProduct(productDetails.productId);
@@ -87,6 +92,7 @@ async function loadPage() {
   document.querySelectorAll('.js-buy-again').forEach((button) => {
     button.addEventListener('click', () => {
       addToCart(button.dataset.productId);
+      updateCartQuantity();
 
       // (Optional) display a message that the product was added,
       // then change it back after a second.
@@ -98,6 +104,42 @@ async function loadPage() {
         `;
       }, 1000);
     });
+  });
+}
+
+function updateCartQuantity() {
+  const cartQuantity = calculateCartQuantity();
+
+  if (cartQuantity === 0) {
+    document.querySelector(".js-cart-quantity").innerHTML = "";
+  } else {
+    document.querySelector(".js-cart-quantity").innerHTML = cartQuantity;
+  }
+}
+
+updateCartQuantity();
+
+// Search functionality - redirect to homepage with search query
+const searchButton = document.querySelector(".js-search-button");
+if (searchButton) {
+  searchButton.addEventListener("click", () => {
+    const search = document.querySelector(".js-search-bar").value;
+    if (search) {
+      window.location.href = `index.html?search=${search}`;
+    }
+  });
+}
+
+// Search by pressing "Enter" on the keyboard
+const searchBar = document.querySelector('.js-search-bar');
+if (searchBar) {
+  searchBar.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      const searchTerm = document.querySelector('.js-search-bar').value;
+      if (searchTerm) {
+        window.location.href = `index.html?search=${searchTerm}`;
+      }
+    }
   });
 }
 

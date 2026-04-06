@@ -1,9 +1,10 @@
-import { cart } from "../../data/cart.js";
+import { cart, resetCart } from "../../data/cart.js";
 import { getProduct } from "../../data/products.js";
-import { getDeliveryOption } from "../../data/deliveryOptions.js";
+import { getDeliveryOption, calculateDeliveryDate } from "../../data/deliveryOptions.js";
 import { formatCurrency } from "../utils/money.js";
 import { calculateCartQuantity } from "../../data/cart.js";
 import { addOrder } from "../../data/orders.js";
+import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
 
 export function renderPaymentSummary() {
   let paymentSummaryHTML = "";
@@ -88,12 +89,37 @@ export function renderPaymentSummary() {
         });
 
         const order = await response.json();
+        
+        // Convert cart items to order products format with delivery time
+        order.products = cart.map((cartItem) => {
+          const deliveryOption = getDeliveryOption(cartItem.deliveryOptionId);
+          const today = dayjs();
+          let deliveryDate = today;
+          let daysToAdd = deliveryOption.deliveryDays;
+
+          while (daysToAdd > 0) {
+            deliveryDate = deliveryDate.add(1, "day");
+
+            if (deliveryDate.day() !== 0 && deliveryDate.day() !== 6) {
+              daysToAdd--;
+            }
+          }
+          
+          return {
+            productId: cartItem.productId,
+            quantity: cartItem.quantity,
+            estimatedDeliveryTime: deliveryDate.toDate().getTime()
+          };
+        });
+        
         addOrder(order);
 
       } catch (error) {
         console.log("Unexpected error, Try again later");
         
       }
+      // Extra feature: make the cart empty after creating an order.
+      resetCart();
 
       window.location.href = "orders.html"
     });

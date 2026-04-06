@@ -18,6 +18,7 @@ class Product {
   name;
   rating;
   priceCents;
+  keywords;
 
   constructor(productDetails) {
     this.id = productDetails.id;
@@ -25,6 +26,7 @@ class Product {
     this.name = productDetails.name;
     this.rating = productDetails.rating;
     this.priceCents = productDetails.priceCents;
+    this.keywords = productDetails.keywords;
   }
 
   getStarsUrl() {
@@ -54,30 +56,6 @@ class Clothing extends Product {
   }
 }
 
-/*
-const date = new Date();
-console.log(date);
-console.log(date.toLocaleTimeString());
-
-const object2 ={
-  a: 2,
-  b: this.a
-}
-console.log(object2);
-
-function logThis() {
-  console.log(this);
-}
-logThis()
-logThis.call('hello')
-
-this
-const object3 = {
-  method: ()=>{
-    console.log(this);
-  }
-}
-*/
 
 export let products = [];
 
@@ -101,12 +79,6 @@ export function loadProductsFetch() {
   return promise
 }
 
-
-/*
-loadProductsFetch().then(()=>{
-  console.log('next step');
-});
-*/
 export function loadProducts(fun) {
   const xhr = new XMLHttpRequest();
 
